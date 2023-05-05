@@ -7,10 +7,13 @@ import java.util.concurrent.TimeUnit;
 public class Julia extends ComplexFractal implements Runnable {
 	public double re;
 	public double im;
+	public double theta;
+	public double R;
+	public boolean x;
 	public static final DecimalFormat myFormat = new DecimalFormat("0.000");
 
-	public static final double FPS = 30;
-	public static final double TPS = 100;
+	public static final double FPS = 60;
+	public static final double TPS = 200;
 
 	boolean keyPressed = false;
 
@@ -20,6 +23,8 @@ public class Julia extends ComplexFractal implements Runnable {
 	public Julia(final double x, final double y) {
 		re = x;
 		im = y;
+		theta = 0;
+		R = 0.4;
 		startFractal("Julia set for " + re + " + " + im + "i");
 		this.frame.addKeyListener(keyHandler);
 		this.setFocusable(true);
@@ -42,7 +47,6 @@ public class Julia extends ComplexFractal implements Runnable {
 	public void startGameThread() {
 		gameThread = new Thread(this);
 		gameThread.start();
-		;
 	}
 
 	@Override
@@ -62,7 +66,7 @@ public class Julia extends ComplexFractal implements Runnable {
 				secondsToConsume -= deltaTimeSeconds;
 			}
 
-			if(keyPressed) {
+			if (keyPressed || keyHandler.playPressed) {
 				renderSet();
 				frame.setTitle("Julia set for " + myFormat.format(re) + " + " + myFormat.format(im) + "i");
 				frame.validate();
@@ -95,33 +99,44 @@ public class Julia extends ComplexFractal implements Runnable {
 	public void update(double deltaTime) {
 		keyPressed = false;
 		if (keyHandler.upPressed) {
-			im += 0.1 * deltaTime;
+			im += 0.2 * deltaTime;
 			keyPressed = true;
 		}
 
 		if (keyHandler.downPressed) {
-			im -= 0.1 * deltaTime;
+			im -= 0.2 * deltaTime;
 			keyPressed = true;
 		}
 
 		if (keyHandler.leftPressed) {
-			re -= 0.1 * deltaTime;
+			re -= 0.2 * deltaTime;
 			keyPressed = true;
 		}
 
 		if (keyHandler.rightPressed) {
-			re += 0.1 * deltaTime;
+			re += 0.2 * deltaTime;
 			keyPressed = true;
 		}
-	}
 
-	public void draw() {
-		if (keyPressed) {
-			renderSet();
-			frame.setTitle("Julia set for " + myFormat.format(re) + " + " + myFormat.format(im) + "i");
-			frame.invalidate();
-			frame.validate();
-			repaint();
+		if (keyHandler.playPressed) {
+			theta += 0.1 * deltaTime;
+
+			if (R > 1.5) {
+				if (!x) {
+					x = true;
+				}
+			} else if (R < 0.4) {
+				x = false;
+			}
+
+			if (x) {
+				R -= 0.1 * deltaTime;
+			} else {
+				R += 0.1 * deltaTime;
+			}
+			im = R * Math.pow(Math.sin(theta), 2);
+			re = R * Math.pow(Math.cos(theta), 2);
 		}
+
 	}
 }

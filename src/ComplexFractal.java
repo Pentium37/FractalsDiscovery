@@ -14,7 +14,7 @@ public abstract class ComplexFractal extends JComponent {
 	 COLOR SCHEMES:
 	 Sky_Blue: 0x00000000 : Color.HSBtoRGB((float) i / ITERATIONS + 0.62f, 0.5f, 1)
 	 Red: 0x00000000 : Color.HSBtoRGB((float) i / ITERATIONS , 0.5f, 1)
-	 BW:  Color.WHITE.getRGB() : Color.HSBtoRGB(0 , 0.5f, (float) 1 / ITERATIONS)
+	 BW:  Color.WHITE.getRGB() : Color.HSBtoRGB(0 , 0.5f, (float) i / ITERATIONS)
 	 */
 
 	public BufferedImage bufferedImage;
@@ -50,7 +50,7 @@ public abstract class ComplexFractal extends JComponent {
 			}
 		}
 
-		return (i == ITERATIONS) ? 0x00000000: Color.HSBtoRGB((float) i / ITERATIONS , 0.5f, 1);
+		return (i == ITERATIONS) ?   0x00000000 : Color.HSBtoRGB((float) i / ITERATIONS , 0.5f, 1);
 	}
 
 	@Override
